@@ -1,13 +1,14 @@
-import { Menu, X } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useSidebarHandler } from "@/providers/SidebarProvider";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { KeyRound, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { useAuth } from "@/providers/AuthenticationProvider";
 import { Link } from "react-router-dom";
 import BaseUrl from "@/consts/baseUrl";
+import { mockUser } from "@/mocks/mockData";
+import { useAuth } from "@/providers/AuthenticationProvider";
+import { useSidebarHandler } from "@/providers/SidebarProvider";
 import Sidebar from "../Sidebar";
 import ThemeToggle from "../ThemeToggle";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export default function Navbar() {
   const { logout } = useAuth();
@@ -30,66 +31,46 @@ export default function Navbar() {
         </PopoverContent>
       </Popover>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <ThemeToggle />
 
         <Popover open={openPopover} onOpenChange={setPopover}>
           <PopoverTrigger asChild>
-            <div className="navbar__avatar flex items-center gap-2 rounded-md hover:cursor-pointer">
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcnee.png" />
-                <AvatarFallback>D</AvatarFallback>
+            <button className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-accent">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
+                  {mockUser.initials}
+                </AvatarFallback>
               </Avatar>
-              <div>
-                <p className="mb-1 text-sm font-medium leading-none">
-                  donezombie
+              <div className="hidden text-left sm:block">
+                <p className="text-sm font-medium leading-none">
+                  {mockUser.name}
                 </p>
-                <p className="text-xs leading-none text-muted-foreground">
-                  donezombie@gmail.com
+                <p className="mt-1 text-xs leading-none text-muted-foreground">
+                  @{mockUser.username}
                 </p>
               </div>
-            </div>
+            </button>
           </PopoverTrigger>
-          <PopoverContent className="mr-2 mt-2 flex max-w-[200px] flex-col p-2">
-            {[
-              {
-                label: "Change password",
-                href: BaseUrl.ChangePassword,
-                function: () => {
-                  setPopover(false);
-                },
-              },
-              {
-                label: "Log out",
-                function: () => {
-                  setPopover(false);
-                  logout();
-                },
-              },
-            ].map((f) => {
-              if (f.href) {
-                return (
-                  <Link
-                    to={f.href}
-                    className="navbar__each__menu is-hover p-1 px-2 text-sm"
-                    key={f.label}
-                    onClick={f.function}
-                  >
-                    {f.label}
-                  </Link>
-                );
-              }
-
-              return (
-                <p
-                  onClick={f.function}
-                  className="navbar__each__menu is-hover p-1 px-2 text-sm"
-                  key={f.label}
-                >
-                  {f.label}
-                </p>
-              );
-            })}
+          <PopoverContent align="end" className="mt-2 w-52 p-1">
+            <Link
+              to={BaseUrl.ChangePassword}
+              onClick={() => setPopover(false)}
+              className="flex items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-accent"
+            >
+              <KeyRound className="h-4 w-4" />
+              Đổi mật khẩu
+            </Link>
+            <button
+              onClick={() => {
+                setPopover(false);
+                logout();
+              }}
+              className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-red-600 hover:bg-accent dark:text-red-400"
+            >
+              <LogOut className="h-4 w-4" />
+              Đăng xuất
+            </button>
           </PopoverContent>
         </Popover>
       </div>

@@ -39,12 +39,12 @@ export function today() {
 
 /** Ngày đầu của kỳ chứa `date`, dịch thêm `offset` kỳ. Tuần bắt đầu từ thứ Hai. */
 export function periodStart(date, period, offset = 0) {
-  const y = date.getUTCFullYear();
-  const m = date.getUTCMonth();
-  const d = date.getUTCDate();
+  const y = date.getUTCFullYear(); //2026
+  const m = date.getUTCMonth(); //09
+  const d = date.getUTCDate(); //27
   switch (period) {
     case 'day':
-      return utc(y, m, d + offset);
+      return utc(y, m, d + offset); //2026-09-27
     case 'week':
       return utc(y, m, d - ((date.getUTCDay() + 6) % 7) + 7 * offset);
     case 'month':

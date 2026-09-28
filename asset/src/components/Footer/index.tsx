@@ -1,6 +1,8 @@
 const Footer = () => {
   return (
-    <footer className="mt-8 p-4 text-center text-white">Footer here</footer>
+    <footer className="mt-10 py-6 text-center text-xs text-muted-foreground">
+      © 2026 Money Manager · Quản lý chi tiêu cá nhân
+    </footer>
   );
 };
 

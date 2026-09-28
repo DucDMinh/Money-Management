@@ -29,6 +29,9 @@ import ForgotPassword from "./pages/ForgotPassword";
 import DefaultLayout from "./layouts/DefaultLayout";
 import Homepage from "./pages/Homepage";
 import ChangePassword from "./pages/ChangePassword";
+import Register from "./pages/Register";
+import Transactions from "./pages/Transactions";
+import Reports from "./pages/Reports";
 
 const ErrorFallback = ({ error, resetErrorBoundary }: any) => {
   return (
@@ -67,6 +70,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path={BaseUrl.Login} element={<Login />} />
+          <Route path={BaseUrl.Register} element={<Register />} />
           <Route path={BaseUrl.ForgotPassword} element={<ForgotPassword />} />
           <Route
             path={BaseUrl.Homepage}
@@ -89,6 +93,8 @@ const App = () => {
             }
           >
             <Route index element={<Homepage />} />
+            <Route path={BaseUrl.Transactions} element={<Transactions />} />
+            <Route path={BaseUrl.Reports} element={<Reports />} />
             <Route path={BaseUrl.ChangePassword} element={<ChangePassword />} />
           </Route>
 
