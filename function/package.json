@@ -1,0 +1,21 @@
+{
+  "name": "money-manager-api",
+  "version": "1.0.0",
+  "description": "Backend Quản lý chi tiêu (ExpressJS + lưu file JSON)",
+  "private": true,
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  }
+}
