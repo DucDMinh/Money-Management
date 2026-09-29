@@ -30,7 +30,9 @@ class Services {
       },
       (error) => {
         const { status } = error?.response || {};
-        if (status === 401) {
+        // 401 từ login/register là sai thông tin đăng nhập, không phải hết phiên -> để nơi gọi tự xử lý
+        const isAuthRequest = /\/api\/auth\/(login|register)/.test(error?.config?.url || "");
+        if (status === 401 && !isAuthRequest) {
           window.localStorage.clear();
           window.location.reload();
         }

@@ -1,6 +1,4 @@
 import { CheckCircle2, Wallet } from "lucide-react";
-import { formatPercent, formatVND } from "@/helpers/format";
-import { monthBalance } from "@/mocks/mockData";
 
 interface AuthLayoutProps {
   title: string;
@@ -47,42 +45,6 @@ const AuthLayout = ({ title, description, children, footer }: AuthLayoutProps) =
               </li>
             ))}
           </ul>
-
-          <div className="mt-10 rounded-xl border border-primary-foreground/15 bg-primary-foreground/5 p-5">
-            <p className="text-xs text-primary-foreground/70">
-              Số dư {monthBalance.label.toLowerCase()}
-            </p>
-            <p className="mt-1 text-3xl font-semibold">
-              {formatVND(monthBalance.balance)}
-            </p>
-            <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="flex items-center gap-1.5 text-xs text-primary-foreground/70">
-                  <span className="h-2.5 w-2.5 rounded-[3px] bg-income" />
-                  Tổng thu
-                </p>
-                <p className="mt-1 font-medium">{formatVND(monthBalance.income)}</p>
-              </div>
-              <div>
-                <p className="flex items-center gap-1.5 text-xs text-primary-foreground/70">
-                  <span className="h-2.5 w-2.5 rounded-[3px] bg-expense" />
-                  Tổng chi
-                </p>
-                <p className="mt-1 font-medium">
-                  {formatVND(monthBalance.expense)}
-                </p>
-              </div>
-            </div>
-            <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-primary-foreground/15">
-              <div
-                className="h-full rounded-full bg-expense"
-                style={{ width: `${monthBalance.spentRatio}%` }}
-              />
-            </div>
-            <p className="mt-2 text-xs text-primary-foreground/70">
-              Đã chi {formatPercent(monthBalance.spentRatio)} thu nhập tháng này
-            </p>
-          </div>
         </div>
 
         <p className="text-sm text-primary-foreground/60">

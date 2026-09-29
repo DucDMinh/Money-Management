@@ -8,6 +8,7 @@ import {
 import { PERMISSION_ENUM } from "@/consts/common";
 import httpService from "@/services/httpService";
 import { UserInfo } from "@/interfaces/user";
+import { toast } from "@/components/ui/use-toast";
 
 interface AuthenticationContextI {
   loading: boolean;
@@ -64,8 +65,12 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
           httpService.saveUserStorage(data.user);
         }
 
-      } catch (error) {
+      } catch (error: any) {
         console.log(error);
+        toast({
+          variant: "destructive",
+          description: error?.response?.data?.error || "Đăng nhập thất bại",
+        });
       } finally {
         setIsLogging(false);
       }
