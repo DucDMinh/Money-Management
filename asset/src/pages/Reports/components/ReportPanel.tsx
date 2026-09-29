@@ -152,11 +152,7 @@ const ReportPanel = ({ report }: ReportPanelProps) => {
           </CardHeader>
           <CardContent className="divide-y py-0 pb-3">
             {report.transactions.map((transaction) => (
-              <TransactionRow
-                key={transaction.id}
-                transaction={transaction}
-                showActions
-              />
+              <TransactionRow key={transaction.id} transaction={transaction} />
             ))}
           </CardContent>
         </Card>

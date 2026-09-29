@@ -7,20 +7,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatShortDate } from "@/helpers/format";
-import { MockTransaction } from "@/mocks/mockData";
+import { Transaction } from "@/interfaces/transaction";
 import AmountText from "./AmountText";
 import CategoryIcon from "./CategoryIcon";
 
 interface TransactionRowProps {
-  transaction: MockTransaction;
+  transaction: Pick<
+    Transaction,
+    "id" | "type" | "amount" | "category" | "note" | "date"
+  >;
   showDate?: boolean;
-  showActions?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 const TransactionRow = ({
   transaction,
   showDate,
-  showActions,
+  onEdit,
+  onDelete,
 }: TransactionRowProps) => {
   return (
     <div className="flex items-center gap-3 py-3">
@@ -42,8 +47,8 @@ const TransactionRow = ({
         className="text-sm"
       />
 
-      {showActions && (
-        <DropdownMenu>
+      {(onEdit || onDelete) && (
+        <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -55,14 +60,21 @@ const TransactionRow = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-36">
-            <DropdownMenuItem>
-              <Pencil className="mr-2 h-4 w-4" />
-              Sửa
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400">
-              <Trash2 className="mr-2 h-4 w-4" />
-              Xóa
-            </DropdownMenuItem>
+            {onEdit && (
+              <DropdownMenuItem onSelect={onEdit}>
+                <Pencil className="mr-2 h-4 w-4" />
+                Sửa
+              </DropdownMenuItem>
+            )}
+            {onDelete && (
+              <DropdownMenuItem
+                onSelect={onDelete}
+                className="text-red-600 focus:text-red-600 dark:text-red-400 dark:focus:text-red-400"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Xóa
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       )}

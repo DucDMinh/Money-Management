@@ -1,6 +1,6 @@
 import { MoreHorizontal } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { categoryIcons } from "@/mocks/mockData";
+import { categoryIcons } from "@/consts/categories";
 
 interface CategoryIconProps {
   category: string;

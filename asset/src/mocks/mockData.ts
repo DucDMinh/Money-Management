@@ -1,20 +1,3 @@
-import {
-  Car,
-  Clapperboard,
-  Coins,
-  Gift,
-  GraduationCap,
-  HeartPulse,
-  Home,
-  LucideIcon,
-  MoreHorizontal,
-  Receipt,
-  ShoppingBag,
-  TrendingUp,
-  Utensils,
-  Wallet,
-} from "lucide-react";
-
 export type TransactionType = "income" | "expense";
 
 export type ReportPeriod = "day" | "week" | "month" | "year";
@@ -101,60 +84,6 @@ export const mockToday = {
   date: "2026-09-27",
   label: "Chủ nhật, 27 tháng 9, 2026",
 };
-
-export const categoryIcons: Record<string, LucideIcon> = {
-  "Ăn uống": Utensils,
-  "Di chuyển": Car,
-  "Mua sắm": ShoppingBag,
-  "Hóa đơn": Receipt,
-  "Nhà ở": Home,
-  "Giải trí": Clapperboard,
-  "Sức khỏe": HeartPulse,
-  "Giáo dục": GraduationCap,
-  Lương: Wallet,
-  Thưởng: Gift,
-  "Đầu tư": TrendingUp,
-  "Được tặng": Coins,
-  Khác: MoreHorizontal,
-};
-
-export const expenseCategories = [
-  "Ăn uống",
-  "Di chuyển",
-  "Mua sắm",
-  "Hóa đơn",
-  "Nhà ở",
-  "Giải trí",
-  "Sức khỏe",
-  "Giáo dục",
-  "Khác",
-];
-
-export const incomeCategories = ["Lương", "Thưởng", "Đầu tư", "Được tặng", "Khác"];
-
-export const categoryFilterOptions = [
-  "Ăn uống",
-  "Di chuyển",
-  "Mua sắm",
-  "Hóa đơn",
-  "Nhà ở",
-  "Giải trí",
-  "Sức khỏe",
-  "Giáo dục",
-  "Lương",
-  "Thưởng",
-  "Đầu tư",
-  "Được tặng",
-  "Khác",
-];
-
-export const dateRangeOptions = [
-  { value: "today", label: "Hôm nay" },
-  { value: "last-7-days", label: "7 ngày qua" },
-  { value: "this-month", label: "Tháng này" },
-  { value: "last-month", label: "Tháng trước" },
-  { value: "this-year", label: "Năm nay" },
-];
 
 export const transactionGroups: TransactionGroup[] = [
   {
@@ -250,16 +179,6 @@ export const recentTransactions: MockTransaction[] = [
   ...transactionGroups[0].items,
   ...transactionGroups[1].items,
 ];
-
-export const transactionSummary = {
-  income: 20850000,
-  expense: 12870000,
-  balance: 7980000,
-  count: 49,
-  showing: 23,
-  page: 1,
-  totalPages: 3,
-};
 
 export const monthBalance = {
   label: "Tháng 09/2026",

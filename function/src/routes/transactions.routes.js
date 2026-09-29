@@ -26,7 +26,6 @@ router.get('/', async (req, res) => {
     all.filter((tx) => tx.userId === req.user.id && matchesFilters(tx, filters)),
   );
   list.sort(newestFirst);
-
   const { page, limit } = filters;
   res.json({
     items: list.slice((page - 1) * limit, page * limit),
