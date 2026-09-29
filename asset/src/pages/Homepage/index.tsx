@@ -25,15 +25,15 @@ import BaseUrl from "@/consts/baseUrl";
 import { formatCompactVND, formatPercent, formatVND } from "@/helpers/format";
 import { cn } from "@/lib/utils";
 import {
-  dashboardCategories,
-  mockToday,
-  mockUser,
-  monthBalance,
   overview,
   PeriodOverview,
-  recentTransactions,
   sixMonthSeries,
 } from "@/mocks/mockData";
+import { useAuth } from "@/providers/AuthenticationProvider";
+import { formatDayLabel, todayISO } from "@/helpers/date";
+import { useOverviewReport, useSummaryReport } from "@/api/report";
+import { Overview } from "@/interfaces/report";
+import { useTransaction } from "@/api/transaction";
 
 const ChangeBadge = ({ change }: { change: number }) => {
   const isIncrease = change > 0;
@@ -79,13 +79,15 @@ const PeriodCard = ({ item }: { item: PeriodOverview }) => {
   );
 };
 
-const BalanceCard = () => {
+const BalanceCard = ({ monthOverview }: { monthOverview: Overview }) => {
+  const monthBalance = monthOverview.totals
+  const spentRatio = 100 / monthBalance.income * monthBalance.expense
   return (
     <Card className="flex flex-col justify-between p-6 sm:col-span-2 lg:row-span-2">
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-medium text-muted-foreground">
-            Số dư {monthBalance.label.toLowerCase()}
+            Số dư {monthOverview.label.toLowerCase()}
           </p>
           <p className="mt-3 text-5xl font-semibold tracking-tight">
             {formatVND(monthBalance.balance)}
@@ -121,13 +123,13 @@ const BalanceCard = () => {
         <div className="mb-2 flex justify-between text-xs text-muted-foreground">
           <span>Đã chi so với thu nhập</span>
           <span className="font-medium text-foreground">
-            {formatPercent(monthBalance.spentRatio)}
+            {formatPercent(spentRatio)}
           </span>
         </div>
         <div className="h-2 overflow-hidden rounded-full bg-expense/20">
           <div
             className="h-full rounded-full bg-expense"
-            style={{ width: `${monthBalance.spentRatio}%` }}
+            style={{ width: `${spentRatio}%` }}
           />
         </div>
       </div>
@@ -136,12 +138,18 @@ const BalanceCard = () => {
 };
 
 const Homepage = () => {
+  const today = todayISO()
+  const { user } = useAuth()
+  const { data: OverviewData } = useOverviewReport(today)
+  const { data: SummaryData } = useSummaryReport("month", today)
+  const { data: transactionData } = useTransaction({ limit: 6 })
+  const monthOverview = OverviewData?.month
   return (
     <PageWrapper>
       <div className="component:Homepage">
         <PageHeader
-          title={`Xin chào, ${mockUser.shortName}`}
-          description={`${mockToday.label} · Đây là tình hình tài chính của bạn`}
+          title={`Xin chào, ${user?.name}`}
+          description={`${formatDayLabel(today)} · Đây là tình hình tài chính của bạn`}
           actions={
             <>
               <Link
@@ -164,7 +172,7 @@ const Homepage = () => {
         />
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <BalanceCard />
+          {monthOverview && <BalanceCard monthOverview={monthOverview} />}
           {overview.map((item) => (
             <PeriodCard key={item.key} item={item} />
           ))}
@@ -194,7 +202,7 @@ const Homepage = () => {
             <CardHeader className="flex-row items-start justify-between space-y-0">
               <div className="space-y-1.5">
                 <CardTitle className="text-base">Chi theo danh mục</CardTitle>
-                <CardDescription>{monthBalance.label}</CardDescription>
+                <CardDescription>{monthOverview?.label}</CardDescription>
               </div>
               <Link
                 to={BaseUrl.Reports}
@@ -205,7 +213,7 @@ const Homepage = () => {
               </Link>
             </CardHeader>
             <CardContent>
-              <CategoryBreakdown items={dashboardCategories} type="expense" />
+              {SummaryData && <CategoryBreakdown items={SummaryData?.byCategory.expense} type="expense" />}
             </CardContent>
           </Card>
         </div>
@@ -225,7 +233,7 @@ const Homepage = () => {
             </Link>
           </CardHeader>
           <CardContent className="grid gap-x-10 divide-y md:grid-cols-2 md:divide-y-0">
-            {recentTransactions.map((transaction) => (
+            {transactionData?.items.map((transaction) => (
               <TransactionRow
                 key={transaction.id}
                 transaction={transaction}

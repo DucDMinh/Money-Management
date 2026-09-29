@@ -2,7 +2,6 @@ import { KeyRound, LogOut, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import BaseUrl from "@/consts/baseUrl";
-import { mockUser } from "@/mocks/mockData";
 import { useAuth } from "@/providers/AuthenticationProvider";
 import { useSidebarHandler } from "@/providers/SidebarProvider";
 import Sidebar from "../Sidebar";
@@ -11,7 +10,7 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 
 export default function Navbar() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const { isOpen, toggle } = useSidebarHandler();
 
   const [openPopover, setPopover] = useState(false);
@@ -39,15 +38,15 @@ export default function Navbar() {
             <button className="flex items-center gap-2.5 rounded-full py-1 pl-1 pr-3 transition-colors hover:bg-accent">
               <Avatar className="h-8 w-8">
                 <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
-                  {mockUser.initials}
+                  US
                 </AvatarFallback>
               </Avatar>
               <div className="hidden text-left sm:block">
                 <p className="text-sm font-medium leading-none">
-                  {mockUser.name}
+                  {user?.name}
                 </p>
                 <p className="mt-1 text-xs leading-none text-muted-foreground">
-                  @{mockUser.username}
+                  @{user?.username}
                 </p>
               </div>
             </button>

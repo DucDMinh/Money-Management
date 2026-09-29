@@ -73,13 +73,6 @@ export interface ReportData {
   transactions: MockTransaction[];
 }
 
-export const mockUser = {
-  name: "Nguyễn Minh Anh",
-  shortName: "Minh Anh",
-  username: "minhanh",
-  initials: "MA",
-};
-
 export const mockToday = {
   date: "2026-09-27",
   label: "Chủ nhật, 27 tháng 9, 2026",
