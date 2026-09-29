@@ -125,16 +125,24 @@ Danh sách được sắp xếp mới nhất trước. `totals` là tổng của
 
 #### `GET /api/reports/overview?date=2026-09-27`
 
-Tổng nhanh của hôm đó, tuần đó, tháng đó và năm đó. Dùng cho màn hình dashboard.
+Tổng nhanh của hôm đó, tuần đó, tháng đó và năm đó, kèm so sánh với kỳ trước. Dùng cho màn hình dashboard.
+
+- `previous`: tổng của kỳ trước **tính tới cùng thời điểm**. Ví dụ ngày 29/09 thì tháng 01/09→29/09 được so với 01/08→29/08, không so với cả tháng 8. Nếu kỳ trước ngắn hơn thì dừng ở cuối kỳ trước, ví dụ 31/03 so với 01/02→28/02.
+- `change`: % thay đổi thu/chi so với `previous`, làm tròn 1 chữ số. Giá trị là `null` khi kỳ trước bằng 0, vì không so sánh được.
 
 ```json
 {
-  "date": "2026-09-27",
-  "day":   { "key": "2026-09-27", "label": "27/09/2026", "start": "2026-09-27", "end": "2026-09-27",
-             "totals": { "income": 0, "expense": 200000, "balance": -200000, "count": 1 } },
-  "week":  { "key": "2026-W39", "label": "Tuần 39/2026 (21/09 - 27/09)", "start": "2026-09-21", "end": "2026-09-27", "totals": { ... } },
-  "month": { "key": "2026-09", "label": "Tháng 09/2026", ... },
-  "year":  { "key": "2026", "label": "Năm 2026", ... }
+  "date": "2026-09-29",
+  "month": {
+    "key": "2026-09", "label": "Tháng 09/2026", "start": "2026-09-01", "end": "2026-09-30",
+    "totals": { "income": 1065000, "expense": 4410000, "balance": -3345000, "count": 31 },
+    "previous": {
+      "key": "2026-08", "label": "Tháng 08/2026", "start": "2026-08-01", "end": "2026-08-29",
+      "totals": { "income": 18500000, "expense": 4500000, "balance": 14000000, "count": 2 }
+    },
+    "change": { "income": -94.2, "expense": -2 }
+  },
+  "day":  { ... }, "week": { ... }, "year": { ... }
 }
 ```
 

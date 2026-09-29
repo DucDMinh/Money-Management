@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { formatPercent, formatVND } from "@/helpers/format";
-import { CategoryTotal, TransactionType } from "@/mocks/mockData";
+import { CategoryTotal } from "@/interfaces/report";
+import { TransactionType } from "@/interfaces/transaction";
 import CategoryIcon from "./CategoryIcon";
 
 interface CategoryBreakdownProps {

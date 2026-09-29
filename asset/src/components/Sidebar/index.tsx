@@ -1,15 +1,20 @@
 import { Wallet } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useOverviewReport } from "@/api/report";
 import { cn } from "@/lib/utils";
+import { todayISO } from "@/helpers/date";
+import { getSpentRatio } from "@/helpers/finance";
 import { formatPercent, formatVND } from "@/helpers/format";
 import { SidebarItem } from "@/interfaces/sidebar";
-import { monthBalance } from "@/mocks/mockData";
 import { useSidebarHandler } from "@/providers/SidebarProvider";
 import AdminItems, { AccountItems } from "./sidebarItem";
 
 const Sidebar = ({ forMobile }: { forMobile?: boolean }) => {
   const location = useLocation();
   const { isOpen } = useSidebarHandler();
+  const { data } = useOverviewReport(todayISO());
+  const month = data?.month;
+  const spentRatio = month ? getSpentRatio(month.totals) : null;
 
   const renderGroup = (title: string, items: SidebarItem[]) => (
     <div>
@@ -63,21 +68,25 @@ const Sidebar = ({ forMobile }: { forMobile?: boolean }) => {
           {renderGroup("Tài khoản", AccountItems)}
         </div>
 
-        <div className="mt-auto rounded-lg bg-muted/60 p-3">
-          <p className="text-xs text-muted-foreground">{monthBalance.label}</p>
-          <p className="mt-1 text-sm font-semibold">
-            Đã chi {formatVND(monthBalance.expense)}
-          </p>
-          <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-expense/20">
-            <div
-              className="h-full rounded-full bg-expense"
-              style={{ width: `${monthBalance.spentRatio}%` }}
-            />
+        {month && (
+          <div className="mt-auto rounded-lg bg-muted/60 p-3">
+            <p className="text-xs text-muted-foreground">{month.label}</p>
+            <p className="mt-1 text-sm font-semibold">
+              Đã chi {formatVND(month.totals.expense)}
+            </p>
+            <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-expense/20">
+              <div
+                className="h-full rounded-full bg-expense"
+                style={{ width: `${Math.min(spentRatio ?? 0, 100)}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">
+              {spentRatio === null
+                ? "Chưa có khoản thu trong tháng"
+                : `${formatPercent(spentRatio)} tổng thu nhập tháng`}
+            </p>
           </div>
-          <p className="mt-2 text-xs text-muted-foreground">
-            {formatPercent(monthBalance.spentRatio)} tổng thu nhập tháng
-          </p>
-        </div>
+        )}
       </div>
     </div>
   );

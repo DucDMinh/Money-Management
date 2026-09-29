@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { formatVND } from "@/helpers/format";
-import { TransactionType } from "@/mocks/mockData";
+import { TransactionType } from "@/interfaces/transaction";
 
 interface AmountTextProps {
   type: TransactionType;

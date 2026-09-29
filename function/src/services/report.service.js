@@ -7,6 +7,10 @@ const MAX_BUCKETS = 1000;
 
 const round2 = (n) => Math.round(n * 100) / 100;
 
+/** % thay đổi so với kỳ trước, làm tròn 1 chữ số; null khi kỳ trước bằng 0 (không so sánh được) */
+const percentChange = (current, previous) =>
+  previous === 0 ? null : Math.round(((current - previous) / Math.abs(previous)) * 1000) / 10;
+
 function emptyTotals() {
   return { income: 0, expense: 0, balance: 0, count: 0 };
 }
@@ -109,12 +113,31 @@ export function buildSeries(transactions, period, from, to) {
   };
 }
 
-/** Tổng nhanh của ngày / tuần / tháng / năm chứa ngày `date` — dùng cho dashboard */
+/**
+ * Tổng nhanh của ngày / tuần / tháng / năm chứa ngày `date` — dùng cho dashboard.
+ * Mỗi kỳ kèm `previous` (tổng của kỳ trước tính tới cùng thời điểm) và `change` (% thay đổi thu/chi).
+ */
 export function buildOverview(transactions, date) {
   const overview = { date: formatDate(date) };
   for (const period of PERIODS) {
-    const list = filterByRange(transactions, periodStart(date, period), periodEnd(date, period));
-    overview[period] = { ...describePeriod(date, period), totals: sumTotals(list) };
+    const start = periodStart(date, period);
+    // So sánh cùng số ngày đã trôi qua: 01/09→29/09 với 01/08→29/08 (không vượt quá cuối kỳ trước)
+    const previousStart = periodStart(date, period, -1);
+    const previousEnd = new Date(
+      Math.min(previousStart.getTime() + (date - start), periodEnd(previousStart, period).getTime()),
+    );
+    const current = sumTotals(filterByRange(transactions, start, date));
+    const previous = sumTotals(filterByRange(transactions, previousStart, previousEnd));
+
+    overview[period] = {
+      ...describePeriod(date, period),
+      totals: sumTotals(filterByRange(transactions, start, periodEnd(date, period))),
+      previous: { ...describePeriod(previousStart, period), end: formatDate(previousEnd), totals: previous },
+      change: {
+        income: percentChange(current.income, previous.income),
+        expense: percentChange(current.expense, previous.expense),
+      },
+    };
   }
   return overview;
 }

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { formatCompactVND, formatVND } from "@/helpers/format";
-import { ChartPoint, TransactionType } from "@/mocks/mockData";
+import { ChartPoint } from "@/interfaces/report";
+import { TransactionType } from "@/interfaces/transaction";
 
 interface ColumnChartProps {
   data: ChartPoint[];

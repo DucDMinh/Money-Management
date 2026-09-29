@@ -66,3 +66,8 @@ export const formatDayLabel = (isoDate: string) => {
   if (isYesterday(date)) return `Hôm qua · ${label}`;
   return label;
 };
+
+export const formatLongDate = (isoDate: string) => {
+  const date = parseISO(isoDate);
+  return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} tháng ${date.getMonth() + 1}, ${date.getFullYear()}`;
+};
