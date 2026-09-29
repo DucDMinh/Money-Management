@@ -18,10 +18,12 @@ export const useTransaction = (filters?: TransactionFilter) => {
 
 const useInvalidateTransactions = () => {
     const queryClient = useQueryClient()
-    return () => Promise.all([
-        queryClient.invalidateQueries({ queryKey: [key] }),
-        queryClient.invalidateQueries({ queryKey: [queriesKeys.category] }),
-    ])
+    return () => Promise.all(
+        [key, queriesKeys.category, queriesKeys.report].map((queryKey) => {
+            queryClient.removeQueries({ queryKey: [queryKey], type: "inactive" })
+            return queryClient.invalidateQueries({ queryKey: [queryKey] })
+        })
+    )
 }
 
 export const useCreateTransaction = () => {

@@ -1,7 +1,6 @@
 import { ChevronDown, ChevronLeft, ChevronRight, Table2 } from "lucide-react";
 import ColumnChart, { ChartLegend } from "@/components/charts/ColumnChart";
 import CategoryBreakdown from "@/components/finance/CategoryBreakdown";
-import TransactionRow from "@/components/finance/TransactionRow";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,16 +22,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { todayISO } from "@/helpers/date";
 import { formatVND } from "@/helpers/format";
+import { SummaryResponse } from "@/interfaces/report";
 import { cn } from "@/lib/utils";
-import { ReportData } from "@/mocks/mockData";
+import { chartConfigs, getRangeLabel, toChartPoints } from "../utils";
+import DayTransactions from "./DayTransactions";
 
 interface ReportPanelProps {
-  report: ReportData;
+  report: SummaryResponse;
+  isFetching?: boolean;
+  onNavigate: (date: string) => void;
 }
 
-const ReportPanel = ({ report }: ReportPanelProps) => {
-  const { totals, chart, byCategory } = report;
+const ReportPanel = ({ report, isFetching, onNavigate }: ReportPanelProps) => {
+  const { totals, byCategory } = report;
+  const chart = chartConfigs[report.period];
+  const chartData = toChartPoints(report);
+  const today = todayISO();
+  const isCurrentPeriod = report.start <= today && today <= report.end;
 
   const stats = [
     { label: "Tổng thu", value: formatVND(totals.income), swatch: "bg-income" },
@@ -45,16 +53,41 @@ const ReportPanel = ({ report }: ReportPanelProps) => {
   ];
 
   return (
-    <div className="flex flex-col gap-4">
+    <div
+      className={cn(
+        "flex flex-col gap-4 transition-opacity",
+        isFetching && "opacity-60"
+      )}
+    >
       <div className="flex items-center justify-between rounded-lg border bg-card p-2 shadow-sm">
-        <Button variant="ghost" size="icon" aria-label="Kỳ trước">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Kỳ trước"
+          onClick={() => onNavigate(report.prev)}
+        >
           <ChevronLeft className="h-5 w-5" />
         </Button>
-        <div className="text-center">
+        <div className="flex flex-col items-center text-center">
           <p className="text-sm font-semibold">{report.label}</p>
-          <p className="text-xs text-muted-foreground">{report.range}</p>
+          <p className="text-xs text-muted-foreground">{getRangeLabel(report)}</p>
+          {!isCurrentPeriod && (
+            <button
+              type="button"
+              onClick={() => onNavigate(today)}
+              className="mt-1 text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+            >
+              Về kỳ hiện tại
+            </button>
+          )}
         </div>
-        <Button variant="ghost" size="icon" aria-label="Kỳ sau">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Kỳ sau"
+          disabled={report.next > today}
+          onClick={() => onNavigate(report.next)}
+        >
           <ChevronRight className="h-5 w-5" />
         </Button>
       </div>
@@ -78,7 +111,7 @@ const ReportPanel = ({ report }: ReportPanelProps) => {
         ))}
       </div>
 
-      {chart && (
+      {chart && chartData.length > 0 && (
         <Card>
           <CardHeader className="flex-row items-start justify-between space-y-0">
             <div className="space-y-1.5">
@@ -89,7 +122,7 @@ const ReportPanel = ({ report }: ReportPanelProps) => {
           </CardHeader>
           <CardContent>
             <ColumnChart
-              data={chart.data}
+              data={chartData}
               series={chart.series}
               labelEvery={chart.labelEvery}
               height={240}
@@ -119,7 +152,7 @@ const ReportPanel = ({ report }: ReportPanelProps) => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {chart.data.map((point) => (
+                      {chartData.map((point) => (
                         <TableRow key={point.key}>
                           <TableCell className="py-2.5">{point.label}</TableCell>
                           <TableCell className="py-2.5 text-right tabular-nums">
@@ -142,21 +175,7 @@ const ReportPanel = ({ report }: ReportPanelProps) => {
         </Card>
       )}
 
-      {report.transactions.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Giao dịch trong ngày</CardTitle>
-            <CardDescription>
-              {report.transactions.length} giao dịch
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="divide-y py-0 pb-3">
-            {report.transactions.map((transaction) => (
-              <TransactionRow key={transaction.id} transaction={transaction} />
-            ))}
-          </CardContent>
-        </Card>
-      )}
+      {report.period === "day" && <DayTransactions date={report.start} />}
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
