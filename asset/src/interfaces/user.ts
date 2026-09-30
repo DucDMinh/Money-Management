@@ -11,3 +11,14 @@ export interface UserInfo {
   isFirstTimeLogin: boolean;
   name: string
 }
+
+export interface RegisterPayload {
+  username: string;
+  password: string;
+  name?: string;
+}
+
+export interface AuthResponse {
+  token: string;
+  user: UserInfo;
+}

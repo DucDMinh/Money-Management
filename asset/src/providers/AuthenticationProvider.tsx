@@ -7,7 +7,7 @@ import {
 } from "react";
 import { PERMISSION_ENUM } from "@/consts/common";
 import httpService from "@/services/httpService";
-import { UserInfo } from "@/interfaces/user";
+import { AuthResponse, RegisterPayload, UserInfo } from "@/interfaces/user";
 import { toast } from "@/components/ui/use-toast";
 
 interface AuthenticationContextI {
@@ -21,6 +21,7 @@ interface AuthenticationContextI {
     username: string;
     password: string;
   }) => void;
+  register: (payload: RegisterPayload) => Promise<void>;
   logout: () => void;
   isAdmin: boolean;
   isAppManager: boolean;
@@ -32,6 +33,7 @@ const AuthenticationContext = createContext<AuthenticationContextI>({
   isLogged: false,
   user: {} as any,
   login: () => { },
+  register: async () => { },
   logout: () => { },
   isAdmin: false,
   isAppManager: false,
@@ -49,6 +51,15 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
   const [isLogging, setIsLogging] = useState(false);
 
   //! Function
+  const saveSession = useCallback((data: AuthResponse) => {
+    setToken(data.token);
+    setUser(data.user);
+
+    httpService.attachTokenToHeader(data.token);
+    httpService.saveTokenStorage(data.token);
+    httpService.saveUserStorage(data.user);
+  }, []);
+
   const login = useCallback(
     async ({ username, password }: { username: string; password: string }) => {
       try {
@@ -56,13 +67,7 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
 
         const response = await httpService.post(`/api/auth/login`, { username: username, password: password })
         if (response) {
-          const data = response.data
-          setToken(data.token);
-          setUser(data.user);
-
-          httpService.attachTokenToHeader(data.token);
-          httpService.saveTokenStorage(data.token);
-          httpService.saveUserStorage(data.user);
+          saveSession(response.data);
         }
 
       } catch (error: any) {
@@ -75,7 +80,15 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
         setIsLogging(false);
       }
     },
-    []
+    [saveSession]
+  );
+
+  const register = useCallback(
+    async (payload: RegisterPayload) => {
+      const response = await httpService.post(`/api/auth/register`, payload);
+      saveSession(response.data);
+    },
+    [saveSession]
   );
 
   const logout = useCallback(() => {
@@ -92,11 +105,12 @@ const AuthenticationProvider = ({ children }: { children: any }) => {
       user,
       logout,
       login,
+      register,
       isAdmin: !!user?.roles?.includes(PERMISSION_ENUM.ADMIN),
       isAppManager: !!user?.roles?.includes(PERMISSION_ENUM.APP_MANAGER),
       isUser: !!user?.roles?.includes(PERMISSION_ENUM.USER),
     };
-  }, [login, logout, user, token, isLogging]);
+  }, [login, register, logout, user, token, isLogging]);
 
   return (
     <AuthenticationContext.Provider value={value}>
