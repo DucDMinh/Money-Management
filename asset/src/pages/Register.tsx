@@ -110,7 +110,7 @@ const Register = () => {
               component={InputField}
               name="name"
               label="Tên hiển thị"
-              placeholder="Ví dụ: Nguyễn Minh Anh"
+              placeholder="Ví dụ: Nguyễn Văn A"
               autoComplete="name"
             />
 
