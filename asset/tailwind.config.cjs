@@ -31,6 +31,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        archivo: ["Archivo", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -67,6 +70,7 @@ module.exports = {
         },
         income: "hsl(var(--income))",
         expense: "hsl(var(--expense))",
+        "chart-muted": "hsl(var(--chart-muted))",
       },
       borderRadius: {
         lg: "var(--radius)",

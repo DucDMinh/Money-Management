@@ -67,6 +67,12 @@ export const formatDayLabel = (isoDate: string) => {
   return label;
 };
 
+/** "Thứ hai, 28/9" — thêm năm nếu không phải năm nay */
+export const formatWeekdayDate = (isoDate: string) => {
+  const date = parseISO(isoDate);
+  return `${WEEKDAYS[date.getDay()]}, ${format(date, isThisYear(date) ? "d/M" : "d/M/yyyy")}`;
+};
+
 export const formatLongDate = (isoDate: string) => {
   const date = parseISO(isoDate);
   return `${WEEKDAYS[date.getDay()]}, ${date.getDate()} tháng ${date.getMonth() + 1}, ${date.getFullYear()}`;

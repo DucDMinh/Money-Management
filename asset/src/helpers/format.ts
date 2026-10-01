@@ -9,6 +9,8 @@ const numberFormatter = new Intl.NumberFormat("vi-VN", {
 
 export const formatVND = (value: number) => currencyFormatter.format(value);
 
+export const formatNumber = (value: number) => numberFormatter.format(value);
+
 export const formatCompactVND = (value: number) => {
   const abs = Math.abs(value);
   if (abs >= 1e6) return `${numberFormatter.format(value / 1e6)}tr`;

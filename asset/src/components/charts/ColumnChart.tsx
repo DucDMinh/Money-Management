@@ -18,7 +18,7 @@ export const seriesMeta: Record<
   expense: { label: "Chi", className: "bg-expense" },
 };
 
-const getTicks = (max: number) => {
+export const getTicks = (max: number) => {
   if (max <= 0) return [0, 1];
   const raw = max / 5;
   const magnitude = 10 ** Math.floor(Math.log10(raw));
